@@ -326,10 +326,3 @@
 		TagLiteral: TagLiteral
 	};
 }));
-
-
-var HtmlTag = module.exports.HtmlTag;
-var a = new HtmlTag('a', { yup:'nope' });
-var x = new module.exports.XmlTag('project', {yup: 'yup' });
-a.children.push(x);
-console.log(a.render());
