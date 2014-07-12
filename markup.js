@@ -1,7 +1,7 @@
 // markup.js
 // (c) 2014 aikeru, MIT License
 // generates angle-brackets (HTML, XML, etc.)
-// has no depedencies
+// has no dependencies
 
 (function (root, factory) {
 
