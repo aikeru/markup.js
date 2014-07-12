@@ -97,13 +97,12 @@
 			.replace(/</g, '&lt;')
 			.replace(/>/g, '&gt;');
 	}
-	function mixWith(originalAtts, newAtts) {
+	function mixWith(newAtts) {
 		for (var attr in newAtts) {
 			if (newAtts.hasOwnProperty(attr)) {
-				originalAtts[attr] = newAtts[attr];
+				this.attr(attr, newAtts[attr]);
 			}
 		}
-		return originalAtts;
 	};
 	function renderOpenTag(attributes) {
 		var retTxt = '<' + this.tagName;
@@ -254,15 +253,11 @@
 		var _attributes = {},
 			_innerText;
 		if(name) self.tagName = name;
+		self.attr = bind.call(attr, this, _attributes, caseModes.html);
 		if(attribs !== undefined) {
 			if(type(attribs) === 'Boolean') { self.selfClosing = attribs; }
 			else {
-				for(var att in attribs) {
-					if(attribs.hasOwnProperty(att)) {
-						var attrName = (''+att).toLowerCase();
-						_attributes[attrName] = attribs[att]; 
-					}
-				}
+				mixWith.call(this, attribs);
 			}
 		}
 		if(selfClosing !== undefined) { self.selfClosing = !!selfClosing; }
@@ -274,7 +269,6 @@
 		self.hasClass = bind.call(hasClass, this, _attributes);
 		self.addClass = bind.call(addClass, this, _attributes);
 		self.removeClass = bind.call(removeClass, this, _attributes);
-		self.attr = bind.call(attr, this, _attributes, caseModes.html);
 		
 		self.setInnerText = function(str) {
 			_innerText = markupEscape(str);
@@ -296,11 +290,7 @@
 		if(attribs !== undefined) {
 			if(type(attribs) === 'Boolean') { self.selfClosing = attribs; }
 			else {
-				for(var att in attribs) {
-					if(attribs.hasOwnProperty(att)) {
-						self.attr(att, attribs[att]); 
-					}
-				}
+				mixWith.call(this, attribs);
 			}
 		}
 		if(selfClosing !== undefined) { self.selfClosing = !!selfClosing; }
@@ -336,3 +326,10 @@
 		TagLiteral: TagLiteral
 	};
 }));
+
+
+var HtmlTag = module.exports.HtmlTag;
+var a = new HtmlTag('a', { yup:'nope' });
+var x = new module.exports.XmlTag('project', {yup: 'yup' });
+a.children.push(x);
+console.log(a.render());
